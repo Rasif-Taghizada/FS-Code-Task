@@ -162,13 +162,15 @@ function datePage() {
               <div class="time__picker-header">
                 <h3>Time</h3>
               </div>
-              <div class="time__picker-title">
-                <h3>Select date</h3>
-              </div>
-              <div class="time__picker__card-container ${
-                bookData.date ? "" : "disabled"
-              }">
-                ${repeatTimeCard().join("")}
+              <div class="time__picker__body">
+                <div class="time__picker-title">
+                  <h3>Select date</h3>
+                </div>
+                <div class="time__picker__card-container ${
+                  bookData.date ? "" : "disabled"
+                }">
+                  ${repeatTimeCard().join("")}
+                </div>
               </div>
             </div>
           </div>
@@ -193,7 +195,7 @@ function datePage() {
 }
 
 function confirmPage() {
-  if (bookData.date) {
+  if (bookData.date && bookData.time) {
     currentStep = 3;
     checkStep(currentStep);
     formOuter.innerHTML = `
@@ -357,7 +359,8 @@ function createDatepicker() {
           </button>
         </div>
       </div>
-      <div class="calendar__days">
+      <div class="calendar__body">
+        <div class="calendar__days">
         <div>Sun</div>
         <div>Mon</div>
         <div>Tue</div>
@@ -369,6 +372,7 @@ function createDatepicker() {
       <ul class="calendar__dates">
         ${renderCalendar()}
       </ul>
+      </div>
     </div>
   `;
 }
@@ -432,7 +436,6 @@ function selectDate(selectedTag, day) {
 
   // set the selected date to the bookData
   bookData.date = day;
-  console.log(bookData);
 
   document
     .querySelector(".time__picker__card-container")
@@ -502,11 +505,7 @@ function selectStaff(card) {
   // set the selected staff id to the bookData
   bookData.staff_id =
     staffs[Array.from(card.parentNode.children).indexOf(card)].id;
-
-  // display next page after 400ms
-  setTimeout(() => {
-    servicePage();
-  }, 400);
+  servicePage();
 }
 
 function selectService(card) {
@@ -520,15 +519,10 @@ function selectService(card) {
   // set the selected service id to the bookData
   bookData.service_id =
     services[Array.from(card.parentNode.children).indexOf(card)].id;
-
-  // display next page after 400ms
-  setTimeout(() => {
-    datePage();
-  }, 400);
+  datePage();
 }
 
 function selectTimePickerCard(card, selectedTime) {
-  console.log(card);
   // remove selected class from all cards
   Array.from(card.parentNode.children).forEach((card) => {
     card.classList.remove("selected");
@@ -538,12 +532,7 @@ function selectTimePickerCard(card, selectedTime) {
 
   // set the selected time to the bookData
   bookData.time = selectedTime;
-  console.log(bookData);
-
-  // display next page after 400ms
-  setTimeout(() => {
-    confirmPage();
-  }, 400);
+  confirmPage();
 }
 
 function checkCustomerData() {
@@ -559,7 +548,9 @@ function checkCustomerData() {
     console.log(bookData);
     createPopup(false);
     bookData = {};
-    staffPage();
+    setTimeout(() => {
+      staffPage();
+    }, 500);
   } else {
     createPopup(true);
   }
